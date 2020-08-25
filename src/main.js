@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
+import store from './store'
 import ElementUI from 'element-ui';
 import VueI18n from 'vue-i18n';
 import { messages } from './components/common/i18n';
@@ -9,7 +10,9 @@ import 'element-ui/lib/theme-chalk/index.css'; // 默认主题
 import './assets/css/icon.css';
 import './components/common/directives';
 import 'babel-polyfill';
+import http from './utils/request'
 
+Vue.prototype.$axios2 = http
 Vue.config.productionTip = false;
 Vue.use(VueI18n);
 Vue.use(ElementUI, {
@@ -44,5 +47,6 @@ router.beforeEach((to, from, next) => {
 new Vue({
     router,
     i18n,
+    store,
     render: h => h(App)
 }).$mount('#app');

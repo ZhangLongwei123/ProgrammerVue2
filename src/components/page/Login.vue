@@ -28,12 +28,14 @@
 </template>
 
 <script>
+import service from '../../utils/request';
+
 export default {
     data: function() {
         return {
             param: {
-                username: 'admin',
-                password: '123123',
+                username: 'OnlineEdu',
+                password: '123',
             },
             rules: {
                 username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -43,17 +45,23 @@ export default {
     },
     methods: {
         submitForm() {
-            this.$refs.login.validate(valid => {
-                if (valid) {
+            console.log(this.param);
+            this.$axios2.post('personnel/vueManagerLogin',{mname:this.param.username,mpwd:this.param.password}).then(data2=>{
+                if (data2==1){
+                    this.$message.warning("登录失败");
+                }else if(data2==2){
+                    this.$message.warning("用户名密码错误");
+                }else {
+                    console.log(data2);
+                    // TODO 存入session
+                    //this.$store.commit("setItems2",JSON.stringify(data2));
+                    sessionStorage.setItem("setItems3",JSON.stringify(data2));
+                    // TODO 跳转界面
                     this.$message.success('登录成功');
                     localStorage.setItem('ms_username', this.param.username);
                     this.$router.push('/');
-                } else {
-                    this.$message.error('请输入账号和密码');
-                    console.log('error submit!!');
-                    return false;
                 }
-            });
+            }).catch(err=>console.log(err));
         },
     },
 };

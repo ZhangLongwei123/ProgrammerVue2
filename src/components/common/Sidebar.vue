@@ -15,7 +15,7 @@
                     <el-submenu :index="item.index" :key="item.index">
                         <template slot="title">
                             <i :class="item.icon"></i>
-                            <span slot="title">{{ item.title }}</span>
+                            <span slot="title" @click="tolink()">{{ item.title }}</span>
                         </template>
                         <template v-for="subItem in item.subs">
                             <el-submenu
@@ -91,6 +91,10 @@ export default {
                                 {
                                     index: 'markdown',
                                     title: 'markdown编辑器'
+                                },
+                                {
+                                    index: 'editor',
+                                    title: '测试编辑器'
                                 }
                             ]
                         },
@@ -149,6 +153,11 @@ export default {
                     icon: 'el-icon-lx-redpacket_fill',
                     index: '/donate',
                     title: '支持作者'
+                },
+                {
+                    icon: 'el-icon-lx-attentionfill',
+                    index: '/index',
+                    title: '测试页面'
                 }
             ]
         };
@@ -158,12 +167,19 @@ export default {
             return this.$route.path.replace('/', '');
         }
     },
+    methods:{
+        tolink(tourl){
+            console.log(tourl);
+        }
+    },
     created() {
         // 通过 Event Bus 进行组件间通信，来折叠侧边栏
         bus.$on('collapse', msg => {
             this.collapse = msg;
             bus.$emit('collapse-content', msg);
         });
+        //赋值菜单数据
+        this.items = JSON.parse(sessionStorage.getItem("setItems3"));//this.$store.state.items2
     }
 };
 </script>

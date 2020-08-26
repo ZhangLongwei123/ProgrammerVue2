@@ -32,18 +32,19 @@
                 <el-table-column prop="email" label="邮箱"></el-table-column>
                 <el-table-column prop="aliPay" label="支付宝账号"></el-table-column>
                 <el-table-column prop="tscore" label="讲师评分"></el-table-column>
+                <el-table-column prop="isenabled" label="是否可用"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button
                                 type="text"
                                 icon="el-icon-edit"
                                 @click="handleEdit(scope.row)"
-                        >编辑</el-button>
+                        >禁用</el-button>
                         <el-button
                                 type="text"
                                 icon="el-icon-delete"
                                 @click="handleDel(scope.row)"
-                        >删除</el-button>
+                        >解封</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -69,18 +70,6 @@
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
-            </span>
-        </el-dialog>
-        <!-- 类型管理弹出框     -->
-        <el-dialog v-dialogDrag title="课程类型添加" center :visible.sync="visible" width="30%">
-            <el-form ref="form" label-width="150px">
-                <el-form-item label="课程类型名">
-                    <el-input v-model="AddCname" style="width: 200px;"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="visible = false">取 消</el-button>
-                <el-button type="primary" @click="AddCourset">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -125,33 +114,9 @@
             }
         },
         methods: {
-            handleDel(row){
-                this.$axios2.post('/course/delOneCourseType', {course_type_id:row.course_type_id}).then(res => {
-                    if (res == 1) {
-                        this.$message.success(`删除成功`);
-                        this.getData();
-                    }else{
-                        this.$message.warning("删除失败");
-                    }
-                }).catch(err => {
-                    console.log(err)
-                })
-            },
-            //添加课程类型操作
-            AddCourset(){
-                this.$axios2.post('/course/addOneCourseType',{course_type_name:this.AddCname}).then(res => {
-                    if(res == 1){
-                        this.$message.success('添加成功！');
-                        this.visible = false;
-                        this.getData();
-                    }else{
-                        this.$message.warning('添加失败！')
-                    }
-                })
-            },
-            // 获取到课程类型
+            // 获取
             getData() {
-                this.$axios2.get('/UserAccountController/QueryUserAccount').then(res => {
+                this.$axios2.get('UserAccountController/QueryUserAccount').then(res => {
                     this.tableData = res
                 })
             },
@@ -159,18 +124,6 @@
             handleSearch() {
                 this.$set(this.query, 'pageIndex', 1);
                 this.getData();
-            },
-            // 删除操作
-            handleDelete(index, row) {
-                // 二次确认删除
-                this.$confirm('确定要删除吗？', '提示', {
-                    type: 'warning'
-                })
-                    .then(() => {
-                        this.$message.success('删除成功');
-                        this.tableData.splice(index, 1);
-                    })
-                    .catch(() => {});
             },
             // 多选操作
             handleSelectionChange(val) {

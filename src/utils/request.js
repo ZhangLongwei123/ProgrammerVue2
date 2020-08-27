@@ -4,7 +4,7 @@ import Qs from 'qs'
 const service = axios.create({
     // process.env.NODE_ENV === 'development' 来判断是否开发环境
     // easy-mock服务挂了，暂时不使用了
-    baseURL: 'http://localhost:8080/',
+    baseURL: 'http://localhost:8066/',
     timeout: 5000,
     transformRequest:function(data){
         return Qs.stringify(data);

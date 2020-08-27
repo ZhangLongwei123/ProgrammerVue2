@@ -187,7 +187,6 @@ export default {
         if (null!=sessionStorage.getItem("setItems3")){
             this.items = JSON.parse(sessionStorage.getItem("setItems3"));//this.$store.state.items2
         }
-        console.log(sessionStorage.getItem("setItems3"))
     }
 };
 </script>

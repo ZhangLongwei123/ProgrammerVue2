@@ -45,19 +45,17 @@ export default {
     },
     methods: {
         submitForm() {
-            console.log(this.param);
             this.$axios2.post('personnel/vueManagerLogin',{mname:this.param.username,mpwd:this.param.password}).then(data2=>{
                 if (data2==1){
-                    this.$message.warning("登录失败");
+                    this.$message({ duration:2000,message:"登录失效",type:"warning" });
                 }else if(data2==2){
-                    this.$message.warning("用户名密码错误");
+                    this.$message({ duration:2000,message:"用户名密码错误",type:"warning" });
                 }else {
-                    console.log(data2);
-                    // TODO 存入session
+                    // 存入session
                     //this.$store.commit("setItems2",JSON.stringify(data2));
                     sessionStorage.setItem("setItems3",JSON.stringify(data2));
-                    // TODO 跳转界面
-                    this.$message.success('登录成功');
+                    // 跳转界面
+                    this.$message({ duration:2500,message:"登录成功",type:"success" });
                     localStorage.setItem('ms_username', this.param.username);
                     this.$router.push('/');
                 }

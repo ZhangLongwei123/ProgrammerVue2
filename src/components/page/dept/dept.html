@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .prolist table {/*width: 100%;*/font-size: 16px; background: #fff; border: 1px solid #ececec; border-radius: 4px;}
+        .prolist table th {height: 46px; color: #fff;text-align:center; background: #11AEE8; border-left: 1px solid #a8d7e8;}
+        .prolist table th:first-child {border-left: none;}
+        .prolist table td {height: 52px; text-align: center; border-left: 1px solid #f1f1f1; border-top: 1px solid #f1f1f1;}
+        .prolist table td:first-child {border-left: none; }
+        .prolist table span {display: inline-block; width: 134px; height: 32px; line-height: 32px; border-radius: 16px; color: #c0c0c0; border: 1px solid #e5e5e5; cursor: pointer; *display: inline; *zoom: 1; float: none; -webkit-transition: all 0.3s ease-out; -ms-transition: all 0.3s ease-out; -o-transition: all 0.3s ease-out; -moz-transition: all 0.3s ease-out; transition: all 0.3s ease-out;}
+        .prolist table span:hover {background: #fcfcfc;}
+        .prolist table span.active {color: #fefefe; background: #ff7c0a; border: 1px solid #ff7c0a;}
+        .prolist table tr:hover {background: #fafafa;}
+        .prolist table p {/*width: 490px; */line-height: 30px;}
+        .secondBox{
+            border:1px solid #DDD;
+            margin-left:10px;
+            margin-top:10px;
+            margin-right:10px;
+        }
+        select {
+            height: 24PX;
+            width: 76px;
+            /*Chrome和Firefox里面的边框是不一样的，所以复写了一下*/
+            border: 1px solid #6C7B8B;
+            color:#535353;
+            /*很关键：将默认的select选择框样式清除  #8bd1b7*/
+            appearance:none;
+            -moz-appearance:none;
+            -webkit-appearance:none;
+            /*在选择框的最右侧中间显示小箭头图片*/
+            background: url("/js/myJquery/images/combo_arrow.png") no-repeat right 6px center ;
+            /*为下拉小箭头留出一点位置，避免被文字覆盖*/
+            padding-left:3px;
+            padding-right: 14px;
+        }
+        .dia{
+            display:none;
+        }
+        .cover{
+            position: absolute;
+            top:0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            background-color:#CCCCCC;
+            opacity: 0.5;
+            z-index: 10001;
+        }
+    </style>
+    <script src="${pageContext.request.contextPath}/js/myJquery/jquery.js"></script>
+    <%--<link rel="stylesheet" href="${pageContext.request.contextPath}/js/css/bookstrap/bootstrap.css">--%>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/js/myJquery/jquery-ui.min.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/js/myJquery/jquery-ui.theme.css"/>
+    <%--<link rel="stylesheet" href="${pageContext.request.contextPath}/js/myJquery/jquery-ui.structure.css"/>--%>
+    <script src="${pageContext.request.contextPath}/js/myJquery/jquery-ui.min.js"></script>
+    <script>
+        function queryDep(){
+            $.ajax({
+                type:"post",
+                url:"${pageContext.request.contextPath}/personnel/queryDep.do",
+                dataType:"json",
+                success:function(data){
+                    var str = "<table style='width:60%;margin-top:10px;margin-left:220px;margin-bottom:20px;'><tr><th>编号</th><th>部门名称</th><th>操作</th><th>操作</th></tr>";
+                    for(var obj in data){
+                        str += "<tr><td>"+data[obj]['did']+"</td><td>"+data[obj]['dname']+"</td><td><span onclick='showModel(this)'>修改</span><input type='hidden' value='"+data[obj]['did']+"'/></td><td><span onclick='removeDep(this)'>删除</span><input type='hidden' value='"+data[obj]['did']+"'/></td></tr>";
+                    }
+                    str += "</table>";
+                    $("#show").children().remove();
+                    $("#show").append(str);
+                }
+            });
+        }
+        function showModel(obj){
+            $("#dName").val("");
+            var dId = $(obj).next().val();
+            console.log(dId);
+            $("#dialog-confirm").dialog({
+                resizable:false,//对话框是否允许调整对话框
+                height:220,
+                width:350,
+                modal:true,
+                buttons:[{//都有哪些按钮
+                    text:"确定",
+                    click:function(){$(this).dialog("close");var dName = $("#dName").val();if(dName!=""){eidtDep(dId,dName);}}//按钮触发的函数
+                },
+                    {
+                        text:"取消",
+                        click:function(){$(this).dialog("close");}//按钮触发的函数
+                    }]
+            });
+        }
+        function eidtDep(dId,dName){
+            $.ajax({
+                type:"post",
+                url:"${pageContext.request.contextPath}/personnel/updateDep.do",
+                data:{"did":dId,"dname":dName},
+                success:function(msg){
+                    if(msg>0){
+                        alert("修改成功！");
+                        $("#show").children().remove();
+                        queryDep();
+                        tipHide();
+                    }else if(msg==-1){
+                        alert("名字重复！");
+                    }else{
+                        alert("无法修改！");
+                    }
+                }
+            });
+        }
+        function removeDep(ob){
+            var dId = $(ob).next().val();
+            $.ajax({
+                type:"post",
+                url:"${pageContext.request.contextPath}/personnel/removeDep.do",
+                data:{"id":dId},
+                success:function(msg){
+                    if(msg>0){
+                        queryDep();
+                    }else{
+                        alert("无法删除！请先删除相关职位！");
+                    }
+                }
+            });
+        }
+        function addDept() {//上传表单数据方法一
+            var  str = $("#addfm").serialize();//cid=1&cname=A322
+            $.ajax({
+                type:"post",
+                url:"${pageContext.request.contextPath}/personnel/addDep.do",
+                data:str,
+                datatype:"text",
+                contentType:"application/x-www-form-urlencoded",//声明上传的数据类型为url类型的编码
+                success:function(msg){
+                    if (msg!=1){
+                        alert("名称已存在!");
+                    }else{
+                        tipHide();
+                        queryDep();
+                    }
+                }
+            })
+        }
+        $(function(){
+            tipHide();
+            queryDep();
+            $("#input_a").button();
+            $("#input_a").next("input").button();
+            $("#input_a").parent().mouseover(function(){
+                if($("#input_a").val()==""){
+                    $("#input_a").next().prop("disabled",true);
+                }else{
+                    $("#input_a").next().prop("disabled",false);
+                }
+            });
+
+        });
+        function tipHide(){
+            $(".cover").hide();
+            $("#tip").hide();
+        }
+        function tipShow() {
+            $(".cover").show();
+            $("#tip").show();
+        }
+    </script>
+</head>
+<body>
+    <div class="secondBox" style="padding-top:18px;padding-left:370px;padding-bottom:14px;">
+        <form id="addfm">
+            新部门名称：<input type="text" name="dname" id="input_a"/>
+            <input type="button" value="提交" onclick="tipShow()"/>
+        </form>
+    </div>
+
+    <div id="show" class="secondBox prolist" style="margin-top: 0px;border-top: 0px;"></div>
+    <div id="dialog-confirm" class="dia" title="部门名修改">
+        新部门名:<input type="text" style="margin-top: 10px;margin-left: 10px;" id="dName"/><br /><br />
+    </div>
+    <!--提示选择框-->
+    <div id="tip" style="position:absolute;top: 108px;left:40%;width:260px;height: 184px;background-color: white;z-index: 10880;">
+        <div style="padding: 0 80px 0 20px;height: 48px;line-height: 42px;border-bottom: 1px solid #eee;
+                    font-size: 14px;color: #333;background-color: #F8F8F8;border-radius: 2px 2px 0 0;">
+            设置标题
+            <span style="position: relative;left:150px;font-size: 10px;line-height: 45px;">
+                        <a onclick="tipHide()">❌</a>
+                    </span>
+        </div>
+        <div style=" position: relative;padding: 20px;line-height: 30px;font-size: 15px;color: #535353;">
+            你确定要添加一个部门吗
+        </div>
+        <div style=" text-align: right;padding: 10px 15px 12px;">
+            <a class="cancel" style=" height: 35px;line-height: 35px;margin: 5px 5px 0;padding: 0 15px;border: 1px solid #dedede;
+                    background-color: #1E9FFF;color: #333;border-radius: 2px;font-weight: 400;text-decoration: none;" onclick="tipHide()">取消</a>
+            <a style=" height: 35px;line-height: 35px;margin: 5px 5px 0;padding: 0 15px;border: 1px solid #dedede;
+                    background-color: #1E9FFF;color: #333;border-radius: 2px;font-weight: 400;text-decoration: none;" onclick="addDept()">确定</a>
+        </div>
+    </div>
+    <div class="cover"></div>
+</body>
+</html>

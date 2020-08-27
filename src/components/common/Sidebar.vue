@@ -162,6 +162,11 @@ export default {
             ]
         };
     },
+    beforeMount() {
+        if (null==sessionStorage.getItem("setItems3")){
+            this.$router.push({path:"/login"});
+        }
+    },
     computed: {
         onRoutes() {
             return this.$route.path.replace('/', '');
@@ -179,7 +184,10 @@ export default {
             bus.$emit('collapse-content', msg);
         });
         //赋值菜单数据
-        this.items = JSON.parse(sessionStorage.getItem("setItems3"));//this.$store.state.items2
+        if (null!=sessionStorage.getItem("setItems3")){
+            this.items = JSON.parse(sessionStorage.getItem("setItems3"));//this.$store.state.items2
+        }
+        console.log(sessionStorage.getItem("setItems3"))
     }
 };
 </script>

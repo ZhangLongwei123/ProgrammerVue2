@@ -115,6 +115,11 @@ export default new Router({
                 {
                     path:'/dept',
                     component: () => import('../components/page/dept/dept')
+                },
+                {
+                    path: '/order',
+                    component: () => import(/* webpackChunkName: "403" */ '../components/page/Order/order.vue'),
+                    meta: { title: '查看订单' }
                 }
             ]
         },

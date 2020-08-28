@@ -9,13 +9,14 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="query.username" placeholder="用户名" class="handle-input mr10"></el-input>
+                <el-input v-model="query.username" placeholder="讲师名" class="handle-input mr10"></el-input>
                 <el-input v-model="query.phone" placeholder="手机号" class="handle-input mr10"></el-input>
                 <el-input v-model="query.true_name" placeholder="真实姓名" class="handle-input mr10"></el-input>
                 <el-input v-model="query.email" placeholder="邮箱" class="handle-input mr10"></el-input>
                 <el-checkbox label="讲师" v-model="query.is_teacher"></el-checkbox>
                 <el-checkbox label="用户" v-model="query.is_user"></el-checkbox>
                 <el-button type="primary" style="margin-left: 20px;" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+                <el-button type="primary" style="margin-left: 20px;" icon="el-icon-search" @click="editTeacher">设置推荐讲师</el-button>
             </div>
             <el-table
                     :data="nowTableData"
@@ -26,30 +27,16 @@
                     @selection-change="handleSelectionChange"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="t_user_id" label="账号ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="username" label="用户名"></el-table-column>
-                <el-table-column prop="nickname" label="昵称"></el-table-column>
-                <el-table-column prop="user_sex" label="性别"></el-table-column>
-                <el-table-column prop="true_name" label="真实姓名"></el-table-column>
-                <el-table-column prop="phone" label="手机号"></el-table-column>
-                <el-table-column prop="email" label="邮箱"></el-table-column>
-                <el-table-column prop="aliPay" label="支付宝账号"></el-table-column>
-                <el-table-column prop="tscore" label="讲师评分"></el-table-column>
-                <el-table-column prop="isenabled" label="是否可用"></el-table-column>
-                <el-table-column label="操作" width="180" align="center">
+                <el-table-column prop="t_user_id" label="讲师编号" width="55" align="center"></el-table-column>
+                <el-table-column prop="true_name" label="讲师名"></el-table-column>
+                <el-table-column label="头像">
                     <template slot-scope="scope">
-                        <el-button
-                                type="text"
-                                icon="el-icon-edit"
-                                @click="open(scope.row)"
-                        >禁用</el-button>
-                        <el-button
-                                type="text"
-                                icon="el-icon-delete"
-                                @click="enableAccount(scope.row)"
-                        >解封</el-button>
+                        <img :src="scope.row.pic" width="60" height="60"/>
                     </template>
                 </el-table-column>
+                <el-table-column prop="user_sex" label="性别"></el-table-column>
+                <el-table-column prop="course_type_name" label="所教专业"></el-table-column>
+                <el-table-column prop="teach_age" label="教龄"></el-table-column>
             </el-table>
             <div class="pagination">
                 <el-pagination
@@ -62,17 +49,32 @@
                 ></el-pagination>
             </div>
         </div>
-        <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
-            <el-form ref="form" label-width="100px">
-                <el-form-item label="封禁原因">
-                    <el-input
-                            type="textarea"
-                            :autosize="{ minRows: 3, maxRows: 5}"
-                            placeholder="请输入原因"
-                            v-model="baninfo">
-                    </el-input>
-                </el-form-item>
-            </el-form>
+        <el-dialog title="编辑" :visible.sync="editVisible" width="60%">
+            <el-table
+                    :data="TeacherData"
+                    border
+                    class="table"
+                    ref="multipleTable"
+                    header-cell-class-name="table-header"
+                    @selection-change="handleSelectionChange"
+            >
+<!--                <el-table-column  width="55" align="center"  >-->
+<!--                    <template slot-scope="scope">-->
+<!--                        <el-checkbox  :key="scope.row.t_user_id"></el-checkbox>-->
+<!--                    </template>-->
+<!--                </el-table-column>-->
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
+                <el-table-column prop="t_user_id" label="讲师编号" width="55" align="center"></el-table-column>
+                <el-table-column prop="true_name" label="讲师名"></el-table-column>
+                <el-table-column label="头像">
+                    <template slot-scope="scope">
+                        <img :src="scope.row.head_protrait" width="50" height="50"/>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="score" label="所教专业"></el-table-column>
+                <el-table-column prop="tscore" label="讲师评分"></el-table-column>
+                <el-table-column prop="diploma" label="文凭"></el-table-column>
+            </el-table>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
                 <el-button type="primary" @click="disableAccount">确 定</el-button>
@@ -103,7 +105,9 @@
                     is_teacher:'',
                     is_user:''
                 },
+                selectData:'',
                 tableData: [],
+                TeacherData:[],
                 multipleSelection: [],
                 delList: [],
                 editVisible: false,
@@ -123,33 +127,18 @@
             }
         },
         methods: {
-            open(row) {
-                if(row.isenabled == 0){
-                    this.$message({ duration:1500,message:"已经禁用了呢",type:"info" });
-                    return;
-                }
-                if(row.isenabled == 0){
-                    enableAccount(row);
-                    return;
-                }
-                this.$confirm('此操作将禁用该用户, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    this.editVisible = true;
-                    this.thisinfo = row;
-                    console.log(this.thisinfo)
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消操作'
-                    });
-                });
+            editTeacher(){
+                this.editVisible = true;
+                this.$axios2.get('TeacherEnterController/queryByTscore').then(res => {
+                    this.TeacherData = res
+                })
+            },
+            test(){
+                alert("你好啊!")
             },
             // 获取
             getData() {
-                this.$axios2.get('UserAccountController/QueryUserAccount').then(res => {
+                this.$axios2.get('TbRecommendTeacherController/QueryUserRecommendTeacher').then(res => {
                     this.tableData = res
                 })
             },
@@ -171,33 +160,42 @@
             // 多选操作
             handleSelectionChange(val) {
                 this.multipleSelection = val;
+                // this.selectData.map( item => {
+                //     this.selectData.push(item);
+                // });
+                // console.log()
+                let objfa  = val.map(x =>
+                {
+                    // arr.push(x.course_type_id)
+                    // arr.push(x.head_protrait)
+                    // arr.push(5)
+                    // arr.push("这是一个非常和蔼的老师")
+                    // arr.push(x.diploma)
+                    let obj = {
+                        'teacherName':x.t_user_id,
+                        'typeId':x.course_type_id,
+                        'pic':x.head_protrait,
+                        'teachAge':30,
+                        'teacheriItroduction':"我们可牛逼了",
+                        'educationBackgroud':x.diploma,
+                        'userAccountList':null
+                    }
+                    return obj;
+                })
+                this.selectData = JSON.stringify(objfa);
+                console.log(this.selectData)
+
             },
-            // 禁用操作
+            // 添加推荐讲师操作
             disableAccount() {
-                this.$axios2.post('UserAccountController/EditUserAccountPwdOrIsenable',{t_user_id:this.thisinfo.t_user_id,isenabled:0,banId:this.thisinfo.t_user_id,banTeacher:0,bandate:new Date().toString(),banResult:this.baninfo}).then(data2=>{
-                    if (data2==1){
-                        this.$message({ duration:1500,message:"禁用成功",type:"success" });
+                this.$axios2.post('TbRecommendTeacherController/Teacher',{'ReTeacherArr':this.selectData}).then(data2=>{
+                    if(data2 == 1){
+                        this.$message({ duration:1500,message:"推荐成功！",type:"success" })
                         this.editVisible = false
-                    }else {
-                        this.$message({ duration:1500,message:"操作失败",type:"warning" });
+                        getData()
+                    }else{
+                        this.$message({ duration:1500,message:"操作失败！",type:"warning" })
                     }
-                    this.getData();
-                }).catch(err=>console.log(err));
-            },
-            // 保存编辑
-            enableAccount(row) {
-                if(row.isenabled==1){
-                    this.$message({ duration:1500,message:"已经解封了呢",type:"info" });
-                    return;
-                }
-                // TODO 弹框确认
-                this.$axios2.post('UserAccountController/EditUserAccountPwdOrIsenable',{t_user_id:row.t_user_id,isenabled:1,banId:row.t_user_id,banTeacher:1,bandate:new Date().toString(),banResult:"解禁操作"}).then(data2=>{
-                    if (data2==1){
-                        this.$message({ duration:1500,message:"解封成功",type:"success" });
-                    }else {
-                        this.$message({ duration:1500,message:"操作失败",type:"warning" });
-                    }
-                    this.getData();
                 }).catch(err=>console.log(err));
             },
             // 分页导航

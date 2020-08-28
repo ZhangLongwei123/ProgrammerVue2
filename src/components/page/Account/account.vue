@@ -112,7 +112,10 @@
             // 获取
             getData() {
                 this.$axios2.get('UserAccountController/QueryUserAccount').then(res => {
-                    this.tableData = res
+                    this.tableData = res;
+                    if (this.tableData.length % this.query.pageSize==0 &&  this.query.pageIndex!=1){
+                        this.$set(this.query, 'pageIndex',this.query.pageIndex-1);
+                    }
                 })
             },
             // 触发搜索按钮
@@ -125,6 +128,7 @@
                     ist = 0;
                 }
                 this.$axios2.post('UserAccountController/queryByLike',{username:this.query.username,phone:this.query.phone, true_name:this.query.true_name, email:this.query.email,is_teacher:ist}).then(res => {
+                    console.log(res);
                     this.tableData = res;
 
                 }).catch(err=>console.log(err));

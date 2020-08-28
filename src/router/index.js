@@ -114,7 +114,23 @@ export default new Router({
                 },
                 {
                     path:'/dept',
-                    component: () => import('../components/page/dept/dept')
+                    component: () => import('../components/page/dept/dept'),
+                    meta: { title: '部门管理' }
+                },
+                {
+                    path:'/position',
+                    component: () => import('../components/page/dept/position'),
+                    meta: {title: '职位管理'}
+                },
+                {
+                    path: '/report',
+                    component: () => import('../components/page/report/report'),
+                    meta: {title: '举报课程处理'}
+                },
+                {
+                    path: '/order',
+                    component: () =>import('../components/page/Order/order'),
+                    meta: {title: '订单管理'}
                 }
             ]
         },

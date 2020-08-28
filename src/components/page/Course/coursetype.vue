@@ -146,8 +146,10 @@
             // 获取到课程类型
             getData() {
                 this.$axios2.get('/course/queryCourseType').then(res => {
-                    console.log(res);
-                    this.tableData = res
+                    this.tableData = res;
+                    if (this.tableData.length % this.query.pageSize==0 &&  this.query.pageIndex!=1){
+                        this.$set(this.query, 'pageIndex',this.query.pageIndex-1);
+                    }
                 })
             },
             // 触发搜索按钮

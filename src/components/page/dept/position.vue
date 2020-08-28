@@ -3,6 +3,7 @@
         <div id="header">
             <div class="handle-box">
                 <el-input v-model="deptName" placeholder="新部门名称" class="handle-input mr10"></el-input>
+                <el-input v-model="deptName" placeholder="新部门名称" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-commit" @click="addDept">添加</el-button>
             </div>
         </div>
@@ -15,6 +16,9 @@
         >
             <el-table-column type="selection" width="55" align="center"></el-table-column>
             <el-table-column prop="did" label="编号" width="55" align="center"></el-table-column>
+            <el-table-column prop="dname" label="部门名称"></el-table-column>
+            <el-table-column prop="dname" label="部门名称"></el-table-column>
+            <el-table-column prop="dname" label="部门名称"></el-table-column>
             <el-table-column prop="dname" label="部门名称"></el-table-column>
 
             <el-table-column label="操作" width="180" align="center">
@@ -136,6 +140,14 @@
             handlePageChange(val) {
                 this.$set(this.query, 'pageIndex', val);
                 this.getData();
+            },
+            getDep() {
+                this.$axios2.post('personnel/queryDep').then(res => {
+                    this.tableData = res;
+                    if (this.tableData.length % this.query.pageSize==0 &&  this.query.pageIndex!=1){
+                        this.$set(this.query, 'pageIndex',this.query.pageIndex-1);
+                    }
+                }).catch(err=>console.log(err));
             }
         }
     };
@@ -151,7 +163,7 @@
         padding-bottom:14px;
     }
     .handle-input {
-        width: 300px;
+        width: 150px;
         display: inline-block;
     }
     .el-table{

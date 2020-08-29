@@ -7,9 +7,18 @@
             <el-table-column label="下单时间" prop="startDate"></el-table-column>
             <el-table-column label="支付完成时间" prop="payTime"></el-table-column>
             <el-table-column label="用户名称" prop="userName"></el-table-column>
-            <el-table-column label="支付方式" prop="payMethod"></el-table-column>
+            <el-table-column label="支付方式" prop="payMethod">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.payMethod=='0'">支付宝</span>
+                </template>
+            </el-table-column>
             <el-table-column label="支付流水号" prop="serialNum"></el-table-column>
-            <el-table-column label="支付状态" prop="payFlag"></el-table-column>
+            <el-table-column label="支付状态" prop="payFlag">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.payFlag=='0'">未支付</span>
+                    <span v-if="scope.row.payFlag=='1'">已支付</span>
+                </template>
+            </el-table-column>
             <el-table-column lable="操作">
                 <template slot-scope="scope">
                     <el-button round size="mini" type="success" @click="show(scope.row)">修改</el-button>
@@ -22,7 +31,9 @@
                     <el-input v-model="Order.orderId"></el-input>
                 </el-form-item>
                 <el-form-item label="支付状态" >
-                    <el-input v-model="Order.payFlag"></el-input>
+                    <el-input v-model="Order.payFlag">
+
+                    </el-input>
                 </el-form-item>
 
             </el-form>
@@ -95,13 +106,6 @@
                     this.$message.error('修改失败')
                 });
 
-            },
-
-            query:function () {
-                this.$axios2.post('TbOrderController/QueryTbOrder')
-                    .then(response => {
-                        this.list = response.Order
-                    })
             },
             // 分页导航
             handlePageChange(val) {

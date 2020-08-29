@@ -115,7 +115,7 @@
             };
         },
         mounted() {
-            this.getData();
+            this.handleSearch();
         },
         computed:{
             nowTableData(){
@@ -147,26 +147,21 @@
                     });
                 });
             },
-            // 获取
-            getData() {
-                this.$axios2.get('UserAccountController/QueryUserAccount').then(res => {
-                    this.tableData = res
-                })
-            },
             // 触发搜索按钮
             handleSearch() {
                 this.$set(this.query, 'pageIndex', 1);
                 let ist = -1;
-                if (this.query.is_teacher==true && this.query.is_user==""){
-                    ist = 1;
-                }else if (this.query.is_teacher=="" && this.query.is_user==true){
+                if (this.query.is_teacher=="" && this.query.is_user==true){
                     ist = 0;
+                }else if (this.query.is_teacher==true && this.query.is_user==""){
+                    ist = 1;
                 }
+
+                console.log("ist:"+ist);
                 this.$axios2.post('UserAccountController/queryByLike',{username:this.query.username,phone:this.query.phone, true_name:this.query.true_name, email:this.query.email,is_teacher:ist}).then(res => {
                     this.tableData = res;
 
                 }).catch(err=>console.log(err));
-                // this.getData();
             },
             // 多选操作
             handleSelectionChange(val) {
@@ -181,7 +176,7 @@
                     }else {
                         this.$message({ duration:1500,message:"操作失败",type:"warning" });
                     }
-                    this.getData();
+                    this.handleSearch();
                 }).catch(err=>console.log(err));
             },
             // 保存编辑
@@ -197,13 +192,13 @@
                     }else {
                         this.$message({ duration:1500,message:"操作失败",type:"warning" });
                     }
-                    this.getData();
+                    this.handleSearch();
                 }).catch(err=>console.log(err));
             },
             // 分页导航
             handlePageChange(val) {
                 this.$set(this.query, 'pageIndex', val);
-                this.getData();
+                //this.handleSearch();
             }
         }
     };

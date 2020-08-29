@@ -119,9 +119,6 @@
                 },
             };
         },
-        mounted() {
-            this.getDep();
-        },
         computed:{
             nowTableData(){
                 return this.tableData.slice((this.query.pageIndex-1)*this.query.pageSize,this.query.pageIndex*this.query.pageSize);

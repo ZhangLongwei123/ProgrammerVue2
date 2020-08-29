@@ -1,10 +1,18 @@
 <template>
     <div>
-        <div id="header">
-            <div class="handle-box">
-                <el-input v-model="deptName" placeholder="新部门名称" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-commit" @click="addDept">添加</el-button>
-            </div>
+        <div class="handle-box">
+            <template>
+                <el-radio v-model="radio1" :label="0">讲师</el-radio>
+                <el-radio v-model="radio1"  :label="1">课程</el-radio>
+            </template>
+            <template>
+                <el-select v-model="radio2" placeholder="请选择">
+                    <el-option label="未处理" :value="0"></el-option>
+                    <el-option label="举报有效" :value="1"></el-option>
+                    <el-option label="举报无效" :value="2"></el-option>
+                </el-select>
+            </template>
+            <el-button type="primary" style="margin-left: 20px;" icon="el-icon-search" @click="getData">搜索</el-button>
         </div>
         <el-table
                 :data="nowTableData"
@@ -14,21 +22,31 @@
                 header-cell-class-name="table-header"
         >
             <el-table-column type="selection" width="55" align="center"></el-table-column>
-            <el-table-column prop="did" label="编号" width="55" align="center"></el-table-column>
-            <el-table-column prop="dname" label="部门名称"></el-table-column>
+            <el-table-column prop="userId" label="编号" width="55" align="center"></el-table-column>
+            <el-table-column prop="reportType" label="举报类型">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.reportType=='0'">讲师</span>
+                    <span v-if="scope.row.reportType=='1'">课程</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="content" label="举报原因"></el-table-column>
+            <el-table-column prop="reported" label="被举报对象"></el-table-column>
+            <el-table-column prop="reportedate" label="举报时间"></el-table-column>
+            <el-table-column prop="dealFlag" label="处理状态">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.dealFlag=='0'">未处理</span>
+                    <span v-if="scope.row.dealFlag=='1'">有效举报</span>
+                    <span v-if="scope.row.dealFlag=='2'">无效举报</span>
+                </template>
+            </el-table-column>
 
             <el-table-column label="操作" width="180" align="center">
                 <template slot-scope="scope">
                     <el-button
                             type="text"
                             icon="el-icon-edit"
-                            @click="handleEdit(scope.row)"
-                    >编辑</el-button>
-                    <el-button
-                            type="text"
-                            icon="el-icon-delete"
-                            @click="handleDel(scope.row)"
-                    >删除</el-button>
+                            @click="open(scope.row)"
+                    >处理</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -42,21 +60,9 @@
                     @current-change="handlePageChange"
             ></el-pagination>
         </div>
-        <el-dialog v-dialogDrag title="部门名称修改" center :visible.sync="editVisible" width="30%">
-            <el-form ref="form" label-width="150px">
-                <el-form-item label="课程类型名">
-                    <el-input v-model="editDept.did" readonly style="width: 200px;"></el-input>
-                    <el-input v-model="editDept.dname" style="width: 200px;"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="visible = false">取 消</el-button>
-                <el-button type="primary" @click="eidtDeptName">确 定</el-button>
-            </span>
-        </el-dialog>
+
     </div>
 </template>
-
 <script>
     export default {
         name: 'dept',
@@ -71,6 +77,8 @@
                     pageSize: 5
                 },
                 editVisible: false,
+                radio1:1,
+                radio2:0,
                 editDept:{
                     did:'',
                     dname:''
@@ -112,7 +120,8 @@
                 }).catch(err=>console.log(err));
             },
             getData() {
-                this.$axios2.post('personnel/queryDep').then(res => {
+                console.log(this.radio1)
+                this.$axios2.post('TbReportController/queryTbReport',{reportType:this.radio1,dealFlag:this.radio2}).then(res => {
                     this.tableData = res;
                     if (this.tableData.length % this.query.pageSize==0 &&  this.query.pageIndex!=1){
                         this.$set(this.query, 'pageIndex',this.query.pageIndex-1);
@@ -136,6 +145,34 @@
             handlePageChange(val) {
                 this.$set(this.query, 'pageIndex', val);
                 this.getData();
+            },
+            open(row,flag) {
+                console.log(row)
+                this.$confirm(`是否封禁该${this.radio1==0?'课程':'讲师'}, 是否继续?`, '提示', {
+                    confirmButtonText: '封禁',
+                    cancelButtonText: '忽略',
+                    type: 'warning',
+                    center: true
+                }).then(() => {
+                    //TODO 访问数据库
+                    this.$axios2.post('TbReportController/editTbReport',{userId:row.userId,
+                        reportType:row.reportType,content:row.content,reported:row.reported,dealFlag:1
+                    }).then(data2=>{
+                            console.log("hello22222222"+","+data2);
+                            if (data2==1){
+                                this.$message.success('已封禁');
+                            }
+                        }).catch(err=>console.log(err))
+                }).catch(() => {
+                    this.$axios2.post('TbReportController/editTbReport',{userId:row.userId,
+                        reportType:row.reportType,content:row.content,reported:row.reported,dealFlag:0
+                    }).then(data2=>{
+                        console.log("hello22222222"+","+data2);
+                        if (data2==1){
+                            this.$message.success('已忽略');
+                        }
+                    }).catch(err=>console.log(err))
+                });
             }
         }
     };
@@ -156,5 +193,8 @@
     }
     .el-table{
         margin: 0 auto;
+    }
+    .handle-box{
+        text-align: center;
     }
 </style>

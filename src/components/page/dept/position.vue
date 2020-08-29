@@ -26,7 +26,7 @@
             <el-table-column type="selection" width="55" align="center"></el-table-column>
             <el-table-column prop="pid" label="编号" width="55" align="center"></el-table-column>
             <el-table-column prop="pname" label="职位名称"></el-table-column>
-            <el-table-column prop="did" label="部门"></el-table-column>
+            <el-table-column prop="department.dname" label="部门"></el-table-column>
 
             <el-table-column label="操作" width="180" align="center">
                 <template slot-scope="scope">
@@ -81,7 +81,7 @@
                                 :value="item.did">
                         </el-option>
                     </el-select>
-                    <el-input v-model="addPosition.pname" style="width: 200px;"></el-input>
+                    <el-input v-model="editPosition.pname" style="width: 200px;"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -143,7 +143,7 @@
                 }).catch(err=>console.log(err));
             },
             eidtPositionName(){
-                this.$axios2.post('personnel/updateDep',this.editPosition).then(res => {
+                this.$axios2.post('personnel/editPosition', { pid:this.editPosition.pid,pname:this.editPosition.pname,did:this.editPosition.did}).then(res => {
                     if (res==1){
                         this.$message({ duration:2000,message:"修改成功",type:"success" });
                         this.editVisible = false;
@@ -182,6 +182,8 @@
                 this.$axios2.post('personnel/addPostion',this.addPosition).then(res => {
                     if (res==1){
                         this.$message({ duration:2000,message:"职位添加成功",type:"success" });
+                        this.getData();
+                        this.addVisible = false;
                     }
                 }).catch(err=>console.log(err));;
             }

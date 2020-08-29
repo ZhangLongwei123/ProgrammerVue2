@@ -185,7 +185,7 @@
                         this.getData();
                         this.addVisible = false;
                     }
-                }).catch(err=>console.log(err));;
+                }).catch(err=>console.log(err));
             }
         },
         created() {

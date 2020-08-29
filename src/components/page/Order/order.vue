@@ -27,13 +27,16 @@
         </el-table>
         <el-dialog :title="title" :visible.sync="dialogFormVisible">
             <el-form label-width="100px">
-                <el-form-item label="订单编号">
+                <el-form-item label="订单编号" >
                     <el-input v-model="Order.orderId"></el-input>
                 </el-form-item>
                 <el-form-item label="支付状态" >
-                    <el-input v-model="Order.payFlag">
-
-                    </el-input>
+                    <template>
+                        <el-select v-model="Order.payFlag" placeholder="请选择" style="width:520px">
+                            <el-option label="未支付" :value="0"></el-option>
+                            <el-option label="已支付" :value="1"></el-option>
+                        </el-select>
+                    </template>
                 </el-form-item>
 
             </el-form>

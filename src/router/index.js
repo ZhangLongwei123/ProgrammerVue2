@@ -131,6 +131,11 @@ export default new Router({
                     path: '/order',
                     component: () =>import('../components/page/Order/order'),
                     meta: {title: '订单管理'}
+                },
+                {
+                    path:'/employee',
+                    component: () => import('../components/page/dept/employee'),
+                    meta: {title:'员工管理'}
                 }
             ]
         },

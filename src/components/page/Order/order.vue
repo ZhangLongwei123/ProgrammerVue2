@@ -2,7 +2,7 @@
     <div>
         <el-table :data="nowTableData">
             <el-table-column label="订单编号" prop="orderId"></el-table-column>
-            <el-table-column label="课程编号" prop="courseId"></el-table-column>
+            <el-table-column label="课程名称" prop="tbCourse.courseName"></el-table-column>
             <el-table-column label="课程价格" prop="coursePrice"></el-table-column>
             <el-table-column label="下单时间" prop="startDate"></el-table-column>
             <el-table-column label="支付完成时间" prop="payTime"></el-table-column>

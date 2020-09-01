@@ -1,5 +1,8 @@
 <template>
+
     <div>
+        <el-input v-model="QueryorderId" placeholder="订单编号" style="width: 30%" class="handle-input mr10"></el-input>
+        <el-button type="primary" icon="el-icon-commit" @click="getData1()">搜索</el-button>
         <el-table :data="nowTableData">
             <el-table-column label="订单编号" prop="orderId"></el-table-column>
             <el-table-column label="课程名称" prop="tbCourse.courseName"></el-table-column>
@@ -17,6 +20,7 @@
                 <template slot-scope="scope">
                     <span v-if="scope.row.payFlag=='0'">未支付</span>
                     <span v-if="scope.row.payFlag=='1'">已支付</span>
+                    <span v-if="scope.row.payFlag=='2'">已退款</span>
                 </template>
             </el-table-column>
             <el-table-column lable="操作">
@@ -24,6 +28,7 @@
                     <el-button round size="mini" type="success" @click="show(scope.row)">修改</el-button>
                 </template>
             </el-table-column>
+
         </el-table>
         <el-dialog :title="title" :visible.sync="dialogFormVisible">
             <el-form label-width="100px">
@@ -35,6 +40,7 @@
                         <el-select v-model="Order.payFlag" placeholder="请选择" style="width:520px">
                             <el-option label="未支付" :value="0"></el-option>
                             <el-option label="已支付" :value="1"></el-option>
+                            <el-option label="已退款" :value="2"></el-option>
                         </el-select>
                     </template>
                 </el-form-item>
@@ -73,7 +79,8 @@
                     pageIndex: 1,
                     pageSize: 3,
 
-                }
+                },
+                QueryorderId: ''
 
             }
 
@@ -88,7 +95,13 @@
         },
         methods: {
             getData() {
+                console.log(this.QueryorderId);
                 this.$axios2.post('TbOrderController/QueryTbOrder').then(res => {
+                    this.tableData = res
+                })
+            },getData1() {
+                console.log(this.QueryorderId);
+                this.$axios2.post('TbOrderController/QorderId',{orderId:this.QueryorderId}).then(res => {
                     this.tableData = res
                 })
             },

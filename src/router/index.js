@@ -136,6 +136,11 @@ export default new Router({
                     path:'/employee',
                     component: () => import('../components/page/dept/employee'),
                     meta: {title:'员工管理'}
+                },
+                {
+                    path:'/financial',
+                    component: () => import('../components/page/Financial/financial'),
+                    meta: {title:'财务中心'}
                 }
             ]
         },

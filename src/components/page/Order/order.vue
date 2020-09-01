@@ -1,8 +1,13 @@
 <template>
 
     <div>
-        <el-input v-model="QueryorderId" placeholder="订单编号" style="width: 30%" class="handle-input mr10"></el-input>
+        <el-input v-model="QueryorderId" placeholder="订单编号" style="width: 28%" class="handle-input mr10"></el-input>
         <el-button type="primary" icon="el-icon-commit" @click="getData1()">搜索</el-button>
+        <el-input v-model="QueryCourseNames" placeholder="课程名称" style="width: 27%" class="handle-input mr10"></el-input>
+        <el-button type="primary" icon="el-icon-commit" @click="getDataCourseName()">搜索</el-button>
+        <el-input v-model="QueryPayFlags" placeholder="支付状态 0未支付、1已支付、2已退款" style="width: 30%" class="handle-input mr10"></el-input>
+        <el-button type="primary" icon="el-icon-commit" @click="getDataCourseFlag()">搜索</el-button>
+
         <el-table :data="nowTableData">
             <el-table-column label="订单编号" prop="orderId"></el-table-column>
             <el-table-column label="课程名称" prop="tbCourse.courseName"></el-table-column>
@@ -80,7 +85,9 @@
                     pageSize: 3,
 
                 },
-                QueryorderId: ''
+                QueryorderId: '',
+                QueryCourseNames:'',
+                QueryPayFlags:''
 
             }
 
@@ -95,13 +102,24 @@
         },
         methods: {
             getData() {
-                console.log(this.QueryorderId);
                 this.$axios2.post('TbOrderController/QueryTbOrder').then(res => {
                     this.tableData = res
                 })
             },getData1() {
-                console.log(this.QueryorderId);
+                console.log(this.QorderId);
                 this.$axios2.post('TbOrderController/QorderId',{orderId:this.QueryorderId}).then(res => {
+                    this.tableData = res
+                })
+            },
+            getDataCourseName(){
+                console.log(this.QueryCourseName);
+                this.$axios2.post('TbOrderController/QueryCourseName',{CourseName:this.QueryCourseNames}).then(res => {
+                    this.tableData = res
+                })
+            },
+            getDataCourseFlag(){
+                console.log(this.QueryPayFlags);
+                this.$axios2.post('TbOrderController/QueryPayFlag',{payFlag:this.QueryPayFlags}).then(res => {
                     this.tableData = res
                 })
             },

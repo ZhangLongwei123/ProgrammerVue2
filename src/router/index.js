@@ -140,7 +140,17 @@ export default new Router({
                 {
                     path:'/financial',
                     component: () => import('../components/page/Financial/financial'),
-                    meta: {title:'财务中心'}
+                    meta: {title:'财务中心 '}
+                },
+                {
+                    path:'/entryrecord',
+                    component: () => import('../components/page/Entryrecord/entryrecord'),
+                    meta: {title:'入驻记录 '}
+                },
+                {
+                    path:'/commission',
+                    component: () => import('../components/page/Commission/commission'),
+                    meta: {title:'讲师提现记录 '}
                 }
             ]
         },

@@ -3,7 +3,7 @@
     <div>
         <el-input v-model="QueryorderId" placeholder="订单编号" style="width: 20%" class="handle-input mr10"></el-input>
         <el-button type="primary" icon="el-icon-commit" @click="getData1()">搜索</el-button>
-        <el-input v-model="QueryCourseNames" placeholder="课程名称" style="width: 20%" class="handle-input mr10"></el-input>
+        <el-input v-model="QueryCourseNames" placeholder="课程名称" style="width: 27%" class="handle-input mr10"></el-input>
         <el-button type="primary" icon="el-icon-commit" @click="getDataCourseName()">搜索</el-button>
         <el-input v-model="QueryPayFlags" placeholder="支付状态 0未支付、1已支付、2已退款" style="width: 30%" class="handle-input mr10"></el-input>
         <el-button type="primary" icon="el-icon-commit" @click="getDataCourseFlag()">搜索</el-button>

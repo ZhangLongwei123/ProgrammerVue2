@@ -148,7 +148,7 @@
             },
             open(row,flag) {
                 console.log(row)
-                this.$confirm(`是否封禁该${this.radio1==0?'课程':'讲师'}, 是否继续?`, '提示', {
+                this.$confirm(`封禁该${this.radio1==0?'课程':'讲师'}, 是否继续?`, '提示', {
                     confirmButtonText: '封禁',
                     cancelButtonText: '忽略',
                     type: 'warning',
@@ -160,15 +160,16 @@
                     }).then(data2=>{
                             console.log("hello22222222"+","+data2);
                             if (data2==1){
+                                this.getData();
                                 this.$message.success('已封禁');
                             }
                         }).catch(err=>console.log(err))
                 }).catch(() => {
                     this.$axios2.post('TbReportController/editTbReport',{userId:row.userId,
-                        reportType:row.reportType,content:row.content,reported:row.reported,dealFlag:0
+                        reportType:row.reportType,content:row.content,reported:row.reported,dealFlag:2
                     }).then(data2=>{
-                        console.log("hello22222222"+","+data2);
                         if (data2==1){
+                            this.getData();
                             this.$message.success('已忽略');
                         }
                     }).catch(err=>console.log(err))

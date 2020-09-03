@@ -2,7 +2,7 @@
     <div>
         <div id="header">
             <div class="handle-box">
-                <el-button type="primary" @click="visible = true">添加职位</el-button>
+                <el-button type="primary" @click="addVisible = true">添加职位</el-button>
                 <template>
                     <el-select v-model="deptValue" placeholder="请选择部门">
                         <el-option
@@ -26,7 +26,7 @@
             <el-table-column type="selection" width="55" align="center"></el-table-column>
             <el-table-column prop="pid" label="编号" width="55" align="center"></el-table-column>
             <el-table-column prop="pname" label="职位名称"></el-table-column>
-            <el-table-column prop="did" label="部门"></el-table-column>
+            <el-table-column prop="department.dname" label="部门"></el-table-column>
 
             <el-table-column label="操作" width="180" align="center">
                 <template slot-scope="scope">
@@ -56,13 +56,37 @@
         <el-dialog v-dialogDrag title="职位添加" center :visible.sync="addVisible" width="30%">
             <el-form ref="form" label-width="150px">
                 <el-form-item label="职位名">
-                    <el-input v-model="editDept.did" readonly style="width: 200px;"></el-input>
-                    <el-input v-model="editDept.dname" style="width: 200px;"></el-input>
+                    <el-select v-model="addPosition.did" placeholder="请选择部门">
+                        <el-option
+                                v-for="item in deptData"
+                                :label="item.dname"
+                                :value="item.did">
+                        </el-option>
+                    </el-select>
+                    <el-input v-model="addPosition.pname" style="width: 200px;"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="addVisible = false">取 消</el-button>
-                <el-button type="primary" @click="eidtDeptName">确 定</el-button>
+                <el-button type="primary" @click="doAddPostion">确 定</el-button>
+            </span>
+        </el-dialog>
+        <el-dialog v-dialogDrag title="职位修改" center :visible.sync="editVisible" width="30%">
+            <el-form ref="form" label-width="150px">
+                <el-form-item label="职位名">
+                    <el-select v-model="editPosition.did" placeholder="请选择部门">
+                        <el-option
+                                v-for="item in deptData"
+                                :label="item.dname"
+                                :value="item.did">
+                        </el-option>
+                    </el-select>
+                    <el-input v-model="editPosition.pname" style="width: 200px;"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button type="primary" @click="eidtPositionName">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -81,21 +105,19 @@
                     pageSize: 5
                 },
                 addVisible: false,
-                editDept:{
-                    did:'',
-                    dname:''
-                },
+                editVisible:false,
                 deptData:[],
                 PositionName:'',
                 deptValue:'',
                 addPosition:{
                     did:'',
                     pname:''
-                }
+                },
+                editPosition:{
+                    did:'',
+                    pname:''
+                },
             };
-        },
-        mounted() {
-            this.getDep();
         },
         computed:{
             nowTableData(){
@@ -104,11 +126,11 @@
         },
         methods:{
             handleEdit(row){
-                this.editDept = Object.assign({},row);
+                this.editPosition = Object.assign({},row);
                 this.editVisible = true;
             },
             handleDel(row){
-                this.$axios2.post('personnel/removeDep.do',{id:row.did}).then(res => {
+                this.$axios2.post('personnel/removePostion',{pId:row.pid}).then(res => {
                     if (res==1){
                         this.$message({ duration:2000,message:"删除成功",type:"success" });
                         this.getData();
@@ -117,8 +139,8 @@
                     }
                 }).catch(err=>console.log(err));
             },
-            eidtDeptName(){
-                this.$axios2.post('personnel/updateDep',this.editDept).then(res => {
+            eidtPositionName(){
+                this.$axios2.post('personnel/editPosition', { pid:this.editPosition.pid,pname:this.editPosition.pname,did:this.editPosition.did}).then(res => {
                     if (res==1){
                         this.$message({ duration:2000,message:"修改成功",type:"success" });
                         this.editVisible = false;
@@ -144,10 +166,21 @@
             },
             getDep() {
                 this.$axios2.post('personnel/queryDep').then(res => {
-                    this.deptData = res;
+                    this.deptData = res;//Object.assign({},obj);
                     if (res.length != 0){
                         this.deptValue = res[0].did;
+                        this.addPosition.did = this.deptValue;
                         this.getData();
+                    }
+                }).catch(err=>console.log(err));
+            },
+            doAddPostion(){
+                console.log(this.addPosition);
+                this.$axios2.post('personnel/addPostion',this.addPosition).then(res => {
+                    if (res==1){
+                        this.$message({ duration:2000,message:"职位添加成功",type:"success" });
+                        this.getData();
+                        this.addVisible = false;
                     }
                 }).catch(err=>console.log(err));
             }

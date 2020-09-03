@@ -10,11 +10,6 @@
         <div class="container">
             <div class="handle-box">
                 <el-input v-model="query.username" placeholder="讲师名" class="handle-input mr10"></el-input>
-                <el-input v-model="query.phone" placeholder="手机号" class="handle-input mr10"></el-input>
-                <el-input v-model="query.true_name" placeholder="真实姓名" class="handle-input mr10"></el-input>
-                <el-input v-model="query.email" placeholder="邮箱" class="handle-input mr10"></el-input>
-                <el-checkbox label="讲师" v-model="query.is_teacher"></el-checkbox>
-                <el-checkbox label="用户" v-model="query.is_user"></el-checkbox>
                 <el-button type="primary" style="margin-left: 20px;" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 <el-button type="primary" style="margin-left: 20px;" icon="el-icon-search" @click="editTeacher">设置推荐讲师</el-button>
             </div>
@@ -58,11 +53,6 @@
                     header-cell-class-name="table-header"
                     @selection-change="handleSelectionChange"
             >
-<!--                <el-table-column  width="55" align="center"  >-->
-<!--                    <template slot-scope="scope">-->
-<!--                        <el-checkbox  :key="scope.row.t_user_id"></el-checkbox>-->
-<!--                    </template>-->
-<!--                </el-table-column>-->
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="t_user_id" label="讲师编号" width="55" align="center"></el-table-column>
                 <el-table-column prop="true_name" label="讲师名"></el-table-column>
@@ -144,33 +134,13 @@
             },
             // 触发搜索按钮
             handleSearch() {
-                this.$set(this.query, 'pageIndex', 1);
-                let ist = -1;
-                if (this.query.is_teacher==true && this.query.is_user==""){
-                    ist = 1;
-                }else if (this.query.is_teacher=="" && this.query.is_user==true){
-                    ist = 0;
-                }
-                this.$axios2.post('UserAccountController/queryByLike',{username:this.query.username,phone:this.query.phone, true_name:this.query.true_name, email:this.query.email,is_teacher:ist}).then(res => {
-                    this.tableData = res;
 
-                }).catch(err=>console.log(err));
-                // this.getData();
             },
             // 多选操作
             handleSelectionChange(val) {
                 this.multipleSelection = val;
-                // this.selectData.map( item => {
-                //     this.selectData.push(item);
-                // });
-                // console.log()
                 let objfa  = val.map(x =>
                 {
-                    // arr.push(x.course_type_id)
-                    // arr.push(x.head_protrait)
-                    // arr.push(5)
-                    // arr.push("这是一个非常和蔼的老师")
-                    // arr.push(x.diploma)
                     let obj = {
                         'teacherName':x.t_user_id,
                         'typeId':x.course_type_id,

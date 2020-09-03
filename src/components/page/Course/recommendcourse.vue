@@ -53,16 +53,11 @@
                     @selection-change="handleSelectionChange"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="t_user_id" label="讲师编号" width="55" align="center"></el-table-column>
-                <el-table-column prop="true_name" label="讲师名"></el-table-column>
-                <el-table-column label="头像">
-                    <template slot-scope="scope">
-                        <img :src="scope.row.head_protrait" width="50" height="50"/>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="score" label="所教专业"></el-table-column>
-                <el-table-column prop="tscore" label="讲师评分"></el-table-column>
-                <el-table-column prop="diploma" label="文凭"></el-table-column>
+                <el-table-column prop="course_id" label="课程编号" width="55" align="center"></el-table-column>
+                <el-table-column prop="course_name" label="课程名"></el-table-column>
+                <el-table-column prop="course_type_name" label="课程类型"></el-table-column>
+                <el-table-column prop="course_price" label="课程价格"></el-table-column>
+
             </el-table>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
@@ -117,7 +112,11 @@
         },
         methods: {
             setRecomCourse(){
+                this.editVisible = true;
+                this.$axios2.get('course/queryWithCourseTypeAndTea').then(res => {
+                    this.ReCourseData = res
 
+                })
             },
             // 获取
             getData() {
@@ -131,27 +130,26 @@
                 let objfa  = val.map(x =>
                 {
                     let obj = {
-                        'teacherName':x.t_user_id,
-                        'typeId':x.course_type_id,
-                        'pic':x.head_protrait,
-                        'teachAge':30,
-                        'teacheriItroduction':"我们可牛逼了",
-                        'educationBackgroud':x.diploma,
-                        'userAccountList':null
+                        'remcommendId':0,
+                        'courseName':x.course_name,
+                        'courseBrief':x.course_introduce,
+                        'teacherId':x.teacher_id,
+                        'teacherBrief':"我们是专业团队",
+                        'startDate':x.createdate,
+                        'count':1000,
+                        'courseId':x.course_id
                     }
                     return obj;
                 })
                 this.selectData = JSON.stringify(objfa);
-                console.log(this.selectData)
-
             },
-            // 添加推荐讲师操作
+            // 添加推荐课程操作
             disableAccount() {
-                this.$axios2.post('TbRecommendTeacherController/Teacher',{'ReTeacherArr':this.selectData}).then(data2=>{
+                this.$axios2.post('TbRecommendCourseController/ForAddCommendCourse',{'commendCourseStr':this.selectData}).then(data2=>{
                     if(data2 == 1){
                         this.$message({ duration:1500,message:"推荐成功！",type:"success" })
                         this.editVisible = false
-                        getData()
+                        this.getData()
                     }else{
                         this.$message({ duration:1500,message:"操作失败！",type:"warning" })
                     }

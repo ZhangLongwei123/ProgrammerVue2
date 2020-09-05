@@ -161,6 +161,21 @@ export default new Router({
                     path:'/commission',
                     component: () => import('../components/page/Commission/commission'),
                     meta: {title:'讲师提现记录 '}
+                },
+                {
+                    path:'/bansealing',
+                    component: () => import('../components/page/Bansealing/bansealing'),
+                    meta: {title:'禁封记录 '}
+                },
+                {
+                    path:'/evaluate',
+                    component: () => import('../components/page/Evaluate/evaluate'),
+                    meta: {title:'用户评价讲师 '}
+                },
+                {
+                    path:'/evaluateCourse',
+                    component: () => import('../components/page/Evaluate/evaluateCourse'),
+                    meta: {title:'用户评价课程 '}
                 }
             ]
         },

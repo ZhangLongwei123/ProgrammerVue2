@@ -9,9 +9,14 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="query.username" placeholder="讲师名" class="handle-input mr10"></el-input>
-                <el-button type="primary" style="margin-left: 20px;" icon="el-icon-search" @click="handleSearch">搜索</el-button>
-                <el-button type="primary" style="margin-left: 20px;" icon="el-icon-search" @click="editTeacher">设置推荐讲师</el-button>
+<!--                <el-input v-model="query.username" placeholder="讲师名" class="handle-input mr10"></el-input>-->
+<!--                <el-input v-model="query.phone" placeholder="手机号" class="handle-input mr10"></el-input>-->
+<!--                <el-input v-model="query.true_name" placeholder="真实姓名" class="handle-input mr10"></el-input>-->
+<!--                <el-input v-model="query.email" placeholder="邮箱" class="handle-input mr10"></el-input>-->
+<!--                <el-checkbox label="讲师" v-model="query.is_teacher"></el-checkbox>-->
+<!--                <el-checkbox label="用户" v-model="query.is_user"></el-checkbox>-->
+<!--                <el-button type="primary" style="margin-left: 20px;" icon="el-icon-search" @click="handleSearch">搜索</el-button>-->
+                <el-button type="primary" style="margin-left: 20px;" icon="el-icon-search" @click="setRecomCourse">设置推荐课程</el-button>
             </div>
             <el-table
                     :data="nowTableData"
@@ -22,16 +27,10 @@
                     @selection-change="handleSelectionChange"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="t_user_id" label="讲师编号" width="55" align="center"></el-table-column>
+                <el-table-column prop="course_name" label="课程名" align="center"></el-table-column>
                 <el-table-column prop="true_name" label="讲师名"></el-table-column>
-                <el-table-column label="头像">
-                    <template slot-scope="scope">
-                        <img :src="scope.row.pic" width="60" height="60"/>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="user_sex" label="性别"></el-table-column>
-                <el-table-column prop="course_type_name" label="所教专业"></el-table-column>
-                <el-table-column prop="teach_age" label="教龄"></el-table-column>
+                <el-table-column prop="start_date" label="上线时间"></el-table-column>
+                <el-table-column prop="count" label="购买人数"></el-table-column>
             </el-table>
             <div class="pagination">
                 <el-pagination
@@ -46,7 +45,7 @@
         </div>
         <el-dialog title="编辑" :visible.sync="editVisible" width="60%">
             <el-table
-                    :data="TeacherData"
+                    :data="ReCourseData"
                     border
                     class="table"
                     ref="multipleTable"
@@ -54,16 +53,11 @@
                     @selection-change="handleSelectionChange"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="t_user_id" label="讲师编号" width="55" align="center"></el-table-column>
-                <el-table-column prop="true_name" label="讲师名"></el-table-column>
-                <el-table-column label="头像">
-                    <template slot-scope="scope">
-                        <img :src="scope.row.head_protrait" width="50" height="50"/>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="score" label="所教专业"></el-table-column>
-                <el-table-column prop="tscore" label="讲师评分"></el-table-column>
-                <el-table-column prop="diploma" label="文凭"></el-table-column>
+                <el-table-column prop="course_id" label="课程编号" width="55" align="center"></el-table-column>
+                <el-table-column prop="course_name" label="课程名"></el-table-column>
+                <el-table-column prop="course_type_name" label="课程类型"></el-table-column>
+                <el-table-column prop="course_price" label="课程价格"></el-table-column>
+
             </el-table>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
@@ -73,7 +67,7 @@
     </div>
 </template>
 <script>
-    import { fetchData } from '../../../api';
+
     import axios from 'axios'
     import qs from 'qs'
     import Vue from 'vue'
@@ -97,7 +91,7 @@
                 },
                 selectData:'',
                 tableData: [],
-                TeacherData:[],
+                ReCourseData:[],
                 multipleSelection: [],
                 delList: [],
                 editVisible: false,
@@ -117,24 +111,18 @@
             }
         },
         methods: {
-            editTeacher(){
+            setRecomCourse(){
                 this.editVisible = true;
-                this.$axios2.get('TeacherEnterController/queryByTscore').then(res => {
-                    this.TeacherData = res
+                this.$axios2.get('course/queryWithCourseTypeAndTea').then(res => {
+                    this.ReCourseData = res
+
                 })
-            },
-            test(){
-                alert("你好啊!")
             },
             // 获取
             getData() {
-                this.$axios2.get('TbRecommendTeacherController/QueryUserRecommendTeacher').then(res => {
+                this.$axios2.get('TbRecommendCourseController/QueryCommendCourse').then(res => {
                     this.tableData = res
                 })
-            },
-            // 触发搜索按钮
-            handleSearch() {
-
             },
             // 多选操作
             handleSelectionChange(val) {
@@ -142,27 +130,26 @@
                 let objfa  = val.map(x =>
                 {
                     let obj = {
-                        'teacherName':x.t_user_id,
-                        'typeId':x.course_type_id,
-                        'pic':x.head_protrait,
-                        'teachAge':30,
-                        'teacheriItroduction':"我们可牛逼了",
-                        'educationBackgroud':x.diploma,
-                        'userAccountList':null
+                        'remcommendId':0,
+                        'courseName':x.course_name,
+                        'courseBrief':x.course_introduce,
+                        'teacherId':x.teacher_id,
+                        'teacherBrief':"我们是专业团队",
+                        'startDate':x.createdate,
+                        'count':1000,
+                        'courseId':x.course_id
                     }
                     return obj;
                 })
                 this.selectData = JSON.stringify(objfa);
-                console.log(this.selectData)
-
             },
-            // 添加推荐讲师操作
+            // 添加推荐课程操作
             disableAccount() {
-                this.$axios2.post('TbRecommendTeacherController/Teacher',{'ReTeacherArr':this.selectData}).then(data2=>{
+                this.$axios2.post('TbRecommendCourseController/ForAddCommendCourse',{'commendCourseStr':this.selectData}).then(data2=>{
                     if(data2 == 1){
                         this.$message({ duration:1500,message:"推荐成功！",type:"success" })
                         this.editVisible = false
-                        getData()
+                        this.getData()
                     }else{
                         this.$message({ duration:1500,message:"操作失败！",type:"warning" })
                     }

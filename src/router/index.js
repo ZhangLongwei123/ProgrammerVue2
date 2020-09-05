@@ -15,6 +15,16 @@ export default new Router({
             meta: { title: '自述文件' },
             children: [
                 {
+                    path: '/recomcourse',
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/Course/recommendcourse.vue'),
+                    meta: { title: '推荐课程管理' }
+                },
+                {
+                    path: '/teainfo',
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/Teacher/TeacherInfo.vue'),
+                    meta: { title: '推荐讲师管理' }
+                },
+                {
                     path: '/account',
                     component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/Account/account.vue'),
                     meta: { title: '账号管理' }

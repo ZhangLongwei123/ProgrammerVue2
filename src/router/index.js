@@ -15,6 +15,11 @@ export default new Router({
             meta: { title: '自述文件' },
             children: [
                 {
+                    path: '/auditcourse',
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/Course/courseaudit'),
+                    meta: { title: '审核课程管理' }
+                },
+                {
                     path: '/recomcourse',
                     component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/Course/recommendcourse.vue'),
                     meta: { title: '推荐课程管理' }
@@ -124,58 +129,12 @@ export default new Router({
                 },
                 {
                     path:'/dept',
-                    component: () => import('../components/page/dept/dept'),
-                    meta: { title: '部门管理' }
-                },
-                {
-                    path:'/position',
-                    component: () => import('../components/page/dept/position'),
-                    meta: {title: '职位管理'}
-                },
-                {
-                    path: '/report',
-                    component: () => import('../components/page/report/report'),
-                    meta: {title: '举报课程处理'}
+                    component: () => import('../components/page/dept/dept')
                 },
                 {
                     path: '/order',
-                    component: () =>import('../components/page/Order/order'),
-                    meta: {title: '订单管理'}
-                },
-                {
-                    path:'/employee',
-                    component: () => import('../components/page/dept/employee'),
-                    meta: {title:'员工管理'}
-                },
-                {
-                    path:'/financial',
-                    component: () => import('../components/page/Financial/financial'),
-                    meta: {title:'财务中心 '}
-                },
-                {
-                    path:'/entryrecord',
-                    component: () => import('../components/page/Entryrecord/entryrecord'),
-                    meta: {title:'入驻记录 '}
-                },
-                {
-                    path:'/commission',
-                    component: () => import('../components/page/Commission/commission'),
-                    meta: {title:'讲师提现记录 '}
-                },
-                {
-                    path:'/bansealing',
-                    component: () => import('../components/page/Bansealing/bansealing'),
-                    meta: {title:'禁封记录 '}
-                },
-                {
-                    path:'/evaluate',
-                    component: () => import('../components/page/Evaluate/evaluate'),
-                    meta: {title:'用户评价讲师 '}
-                },
-                {
-                    path:'/evaluateCourse',
-                    component: () => import('../components/page/Evaluate/evaluateCourse'),
-                    meta: {title:'用户评价课程 '}
+                    component: () => import(/* webpackChunkName: "403" */ '../components/page/Order/order.vue'),
+                    meta: { title: '查看订单' }
                 }
             ]
         },

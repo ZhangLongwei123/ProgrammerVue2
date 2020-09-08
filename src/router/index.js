@@ -15,6 +15,11 @@ export default new Router({
             meta: { title: '自述文件' },
             children: [
                 {
+                    path: '/auditcourse',
+                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/Course/courseaudit'),
+                    meta: { title: '审核课程管理' }
+                },
+                {
                     path: '/recomcourse',
                     component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/Course/recommendcourse.vue'),
                     meta: { title: '推荐课程管理' }
@@ -176,12 +181,6 @@ export default new Router({
                     path:'/evaluateCourse',
                     component: () => import('../components/page/Evaluate/evaluateCourse'),
                     meta: {title:'用户评价课程 '}
-                }
-                ,
-                {
-                    path:'/Coursepopularitylist',
-                    component: () => import('../components/page/Platformstatistics/Coursepopularitylist'),
-                    meta: {title:'课程热度榜 '}
                 }
             ]
         },

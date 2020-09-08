@@ -177,6 +177,12 @@ export default new Router({
                     component: () => import('../components/page/Evaluate/evaluateCourse'),
                     meta: {title:'用户评价课程 '}
                 }
+                ,
+                {
+                    path:'/Coursepopularitylist',
+                    component: () => import('../components/page/Platformstatistics/Coursepopularitylist'),
+                    meta: {title:'课程热度榜 '}
+                }
             ]
         },
         {

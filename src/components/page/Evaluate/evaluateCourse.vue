@@ -1,11 +1,11 @@
 <template>
     <div>
-        <el-input v-model="allName" placeholder="用户编号 " style="width: 50%" class="handle-input mr10"></el-input>
+        <el-input v-model="allName" placeholder="编号 用户编号" style="width: 50%" class="handle-input mr10"></el-input>
         <el-button type="primary" icon="el-icon-commit" @click="QueryTbEvaluateCourseId()">搜索</el-button>
         <el-table :data="nowTableData">
             <el-table-column label="编号" prop="id"></el-table-column>
             <el-table-column label="用户编号" prop="user_id"></el-table-column>
-            <el-table-column label="被评论课程" prop="course_id"></el-table-column>
+            <el-table-column label= "被评论课程" prop="course_id"></el-table-column>
             <el-table-column label="评论内容" prop="content"></el-table-column>
             <el-table-column label="评价时间" prop="commentdate"></el-table-column>
             <el-table-column lable="操作">

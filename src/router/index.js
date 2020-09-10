@@ -181,6 +181,23 @@ export default new Router({
                     path:'/evaluateCourse',
                     component: () => import('../components/page/Evaluate/evaluateCourse'),
                     meta: {title:'用户评价课程 '}
+                },
+                {
+                    path:'/Coursepopularitylist',
+                    component: () => import('../components/page/Platformstatistics/Coursepopularitylist'),
+                    meta: {title:'课程热度榜 '}
+                }
+                ,
+                {
+                    path:'/CollectionCourse',
+                    component: () => import('../components/page/CollectionCourse/collectionCourse'),
+                    meta: {title:'收藏榜 '}
+                }
+                ,
+                {
+                    path:'/TeacherTop',
+                    component: () => import('../components/page/TeacherTop/teacherTop'),
+                    meta: {title:'讲师排行榜 '}
                 }
             ]
         },

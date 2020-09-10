@@ -4,10 +4,10 @@
         <el-button type="primary" icon="el-icon-commit" @click="QuerybanId()">搜索</el-button>
         <el-table :data="nowTableData">
         <el-table-column label="编号" prop="ban_id"></el-table-column>
-        <el-table-column label="禁封状态" prop="ban_teacher">
+        <el-table-column label="禁封状态" prop="ban_flag">
         <template slot-scope="scope">
-        <span v-if="scope.row.ban_teacher=='0'">禁封</span>
-        <span v-if="scope.row.ban_teacher=='1'">解封</span>
+        <span v-if="scope.row.ban_flag=='0'">禁封</span>
+        <span v-if="scope.row.ban_flag=='1'">解封</span>
         </template>
         </el-table-column>
         <el-table-column label="禁封时间" prop="bandate"></el-table-column>

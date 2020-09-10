@@ -9,7 +9,7 @@
         <el-button type="primary" icon="el-icon-commit" @click="getDataCourseFlag()">搜索</el-button>
 
         <el-table :data="nowTableData">
-            <el-table-column label="订单编号" prop="orderId"></el-table-column>
+            <el-table-column label="订单编号" prop="orderLongId"></el-table-column>
             <el-table-column label="课程名称" prop="tbCourse.courseName"></el-table-column>
             <el-table-column label="课程价格" prop="coursePrice"></el-table-column>
             <el-table-column label="下单时间" prop="startDate"></el-table-column>
@@ -17,7 +17,7 @@
             <el-table-column label="用户名称" prop="userName"></el-table-column>
             <el-table-column label="支付方式" prop="payMethod">
                 <template slot-scope="scope">
-                    <span v-if="scope.row.payMethod=='0'">支付宝</span>
+                    <span v-if="scope.row.payMethod==0">支付宝</span>
                 </template>
             </el-table-column>
             <el-table-column label="支付流水号" prop="serialNum"></el-table-column>
@@ -37,12 +37,12 @@
         </el-table>
         <el-dialog :title="title" :visible.sync="dialogFormVisible">
             <el-form label-width="100px">
-                <el-form-item label="订单编号" >
-                    <el-input v-model="Order.orderId"></el-input>
+                <el-form-item label="订单编号" label-width="80px" style="width: 600px;margin-left: 100px;">
+                    <el-input v-model="Order.orderId" style="width: 400px;"></el-input>
                 </el-form-item>
-                <el-form-item label="支付状态" >
+                <el-form-item label="支付状态" label-width="80px" style="width: 600px;margin-left: 100px;">
                     <template>
-                        <el-select v-model="Order.payFlag" placeholder="请选择" style="width:520px">
+                        <el-select v-model="Order.payFlag" placeholder="请选择" style="width: 400px;">
                             <el-option label="未支付" :value="0"></el-option>
                             <el-option label="已支付" :value="1"></el-option>
                             <el-option label="已退款" :value="2"></el-option>
@@ -106,7 +106,6 @@
                     this.tableData = res
                 })
             },getData1() {
-                console.log(this.QorderId);
                 this.$axios2.post('TbOrderController/QorderId',{orderId:this.QueryorderId}).then(res => {
                     this.tableData = res
                 })

@@ -3,7 +3,7 @@
         <el-input v-model="allName" placeholder="讲师编号 身份证号 入驻结果 " style="width: 50%" class="handle-input mr10"></el-input>
         <el-button type="primary" icon="el-icon-commit" @click="getData()">搜索</el-button>
         <el-table :data="nowTableData">
-            <el-table-column label="讲师入驻编号" prop="registerId"></el-table-column>
+            <el-table-column label="讲师入驻编号" prop="register_id"></el-table-column>
             <el-table-column label="入驻时间" prop="createdate"></el-table-column>
             <el-table-column label="文凭证书" prop="diploma"></el-table-column>
             <el-table-column label="身份证号" prop="idcard"></el-table-column>

@@ -80,8 +80,8 @@
             handlePageChange(val) {
                 this.$set(this.query, 'pageIndex', val);
             },getData1() {
-                console.log(this.QorderId);
-                this.$axios2.post('TbOrderController/QorderId',{orderId:this.QueryorderId}).then(res => {
+                console.log(this.QueryorderId);
+                this.$axios2.post('TbOrderController/QorderId2',{orderId:this.QueryorderId}).then(res => {
                     this.tableData = res
                 })
             },

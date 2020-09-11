@@ -1,6 +1,7 @@
 <template>
     <div>
-       
+        <el-input v-model="allName" placeholder="编号 课程名称 " style="width: 50%" class="handle-input mr10"></el-input>
+        <el-button type="primary" icon="el-icon-commit" @click="getData2()">搜索</el-button>
         <el-table :data="nowTableData">
             <el-table-column label="编号" prop="course_id"></el-table-column>
             <el-table-column label="课程名称" prop="course_name"></el-table-column>
@@ -46,7 +47,8 @@
                     pageIndex: 1,
                     pageSize: 5
 
-                }
+                },
+                allName:''
 
 
             }
@@ -65,6 +67,16 @@
                 this.$axios2.post('course/Coursepopularitylist').then(res => {
                     this.tableData = res
                 })
+            },
+            getData2() {
+                this.$axios2.post('course/SerachBycourse_id',{allLikeName:this.allName}).then(res => {
+                    this.tableData = res
+                })
+            }
+            ,
+            // 分页导航
+            handlePageChange(val) {
+                this.$set(this.query, 'pageIndex', val);
             }
         },
 

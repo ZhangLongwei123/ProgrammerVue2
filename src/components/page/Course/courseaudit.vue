@@ -21,7 +21,7 @@
                 <el-table-column prop="course_type" label="课程类型"></el-table-column>
                 <el-table-column prop="true_name" label="讲师名"></el-table-column>
                 <el-table-column prop="createdate" label="发布时间"></el-table-column>
-                <el-table-column label="课程状态">刚发布</el-table-column>
+                <el-table-column label="课程状态">待审核</el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button
